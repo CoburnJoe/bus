@@ -18,8 +18,6 @@ jobs:
         pip install pipenv
         python -m pipenv install --dev --pre --system
         export PYTHONPATH="$PWD"
-        echo $PWD
-        echo $PYTHONPATH
     - name: Black Check
       run: |
         black --check $PWD

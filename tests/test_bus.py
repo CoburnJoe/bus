@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from busses.bus import Bus
+from busses import Bus
 
 
 class TestBus:
