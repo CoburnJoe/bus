@@ -8,20 +8,29 @@ class Bus:
         pass
 
     @staticmethod
-    def nest(parent: str, child: str, keys: List[tuple]) -> str:
-        _parent = json.loads(parent)
-        _child = json.loads(child)
+    def group(parent: str, child: str, keys: List[tuple]) -> [str, None]:
+        try:
+            _parent = json.loads(parent)
+            _child = json.loads(child)
+        except (TypeError, json.decoder.JSONDecodeError):
+            return None
 
-        for object in _parent:
-            for pair in keys:
-                child_key = pair[0]  # student uuid
-                parent_key = pair[1]  # meals
+        parent_type: type = type(_parent)
+        child_type: type = type(_child)
 
-                for child_ in _child:
-                    if object[child_key] == child_[child_key]:
-                        object[parent_key] = child_
-                        # del object[parent_key][child_key]
+        if parent_type.__name__ == "list" and child_type.__name__ == "list":
+            for parent_ in _parent:
+                for pair in keys:
+                    shared_key = pair[0]
+                    new_name = pair[1]
+                    for child_ in _child:
+                        parent_match = parent_.get(shared_key)
+                        child_match = child_.get(shared_key)
+                        if parent_match == child_match:
+                            new_child = child_
+                            del new_child[shared_key]
+                            parent_[new_name] = new_child
 
-        print(_parent)
+            return json.dumps(_parent)
 
-        return "yes"
+        return None

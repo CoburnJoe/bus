@@ -1,4 +1,5 @@
 import json
+import pytest
 
 from busses.bus import Bus
 
@@ -12,79 +13,45 @@ class TestBus:
     def teardown_method(self):
         pass
 
-    def test_shuttle(self):
-        # def nest(self, parent: str, child: str, keys: dict) -> str:
-        parent_payload = json.dumps(
-            [
-                {
-                    "student_uuid": "123",
-                    "upn": "upn string",
-                    "former_upn": "former upn string",
-                    "gender_code": "gender code",
-                    "forename": "string",
-                    "middle_names": "string",
-                    "surname": "string",
-                    "former_surname": "string",
-                    "preferred_forename": "string",
-                    "preferred_surname": "string",
-                    "admission_status": "string",
-                    "enrolment_status": "string",
-                    "g_and_t_indicator": True,
-                    "mode_of_travel_code": "string",
-                    "mode_of_travel": "string",
-                    "house_code": "string",
-                    "house": "string",
-                    "eal": True,
-                    "first_language": "string",
-                },
-                {
-                    "student_uuid": "789",
-                    "upn": "upn string",
-                    "former_upn": "former upn string",
-                    "gender_code": "gender code",
-                    "forename": "string",
-                    "middle_names": "string",
-                    "surname": "string",
-                    "former_surname": "string",
-                    "preferred_forename": "string",
-                    "preferred_surname": "string",
-                    "admission_status": "string",
-                    "enrolment_status": "string",
-                    "g_and_t_indicator": True,
-                    "mode_of_travel_code": "string",
-                    "mode_of_travel": "string",
-                    "house_code": "string",
-                    "house": "string",
-                    "eal": True,
-                    "first_language": "string",
-                },
-            ]
+    def test_group_simple_positive(self):
+        parent_payload = []
+        child_payload = []
+
+        for num in range(1, 5):
+            _parent_payload = {"id": num, "A": "A", "B": "B"}
+            parent_payload.append(_parent_payload)
+
+            if num % 2 == 1:
+                _child_payload = {"id": num, "C": "C", "D": "D"}
+                child_payload.append(_child_payload)
+
+        parent_payload = json.dumps(parent_payload)
+        child_payload = json.dumps(child_payload)
+
+        result = self.bus.group(
+            parent=parent_payload, child=child_payload, keys=[("id", "child_data")]
         )
-        child_payload = json.dumps(
-            [
-                {
-                    "student_uuid": "123",
-                    "meal_uuid": "string",
-                    "meal_name": "string",
-                    "provided_by_school": True,
-                    "date_of_meal": "string",
-                    "meal_price": "string",
-                    "cost_to_student": "string",
-                },
-                {
-                    "student_uuid": "456",
-                    "meal_uuid": "string",
-                    "meal_name": "string",
-                    "provided_by_school": True,
-                    "date_of_meal": "string",
-                    "meal_price": "string",
-                    "cost_to_student": "string",
-                },
-            ]
+
+        assert (
+            result
+            == '[{"id": 1, "A": "A", "B": "B", "child_data": {"C": "C", "D": "D"}}, {"id": 2, "A": "A", "B": "B"}, '
+            '{"id": 3, "A": "A", "B": "B", "child_data": {"C": "C", "D": "D"}}, {"id": 4, "A": "A", "B": "B"}]'
         )
-        # [{}]
-        expected_output = None
-        result = self.bus.nest(
-            parent=parent_payload, child=child_payload, keys=[("student_uuid", "meals")]
+
+    @pytest.mark.parametrize(
+        "parent_payload, child_payload, expected_output",
+        [
+            ({}, None, None),
+            (None, {}, None),
+            ("", "", None),
+            ("", None, None),
+            (None, "", None),
+        ],
+    )
+    def test_group_arg_error_handling(
+        self, parent_payload, child_payload, expected_output
+    ):
+        result = self.bus.group(
+            parent=parent_payload, child=child_payload, keys=[("id", "child_data")]
         )
-        assert 1 == 1
+        assert result == expected_output
