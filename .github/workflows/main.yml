@@ -20,6 +20,7 @@ jobs:
         export PYTHONPATH="$PWD"
         echo $PWD
         echo $PYTHONPATH
+        echo ls
     - name: Black Check
       run: |
         black --check $PWD
