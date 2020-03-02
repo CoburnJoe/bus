@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from busses import Bus
+from busses.bendy_bus import Bus
 
 
 class TestBus:
