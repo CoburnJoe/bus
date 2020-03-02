@@ -17,13 +17,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install pipenv
         python -m pipenv install --dev --pre --system
-        pipenv export PYTHONPATH="$PWD"
+        export PYTHONPATH="$PWD"
+        echo $PWD
+        echo $PYTHONPATH
     - name: Black Check
       run: |
-        pipenv black --check $PWD
-#    - name: Unit Tests
-#      run:
-#        pipenv pytest tests
-    - name: Unit Tests + Coverage Report
+        black --check $PWD
+    - name: Unit Tests
       run:
-        pipenv pytest --cov=./
+        pytest tests
+    - name: Coverage Report
+      run:
+        pytest --cov=./
