@@ -15,7 +15,7 @@ pip install bus
 
 ```python
 from bussing.busses import Bus
-Bus().group(parent='PARENT JSON', child='CHILD JSON', keys=[("id", "shapes")]
+Bus().group(parent='PARENT JSON', child='CHILD JSON', keys=[("id", "shapes")])
 ```
 
 Keys needs to be a list of tuples. The first element is the key ID to match results with,
@@ -98,3 +98,6 @@ You can combine these results into one payload:
 ]
 ```
 
+# Links
+* Releases: https://pypi.org/project/bus/
+* Code: https://github.com/CoburnJoe/bus
