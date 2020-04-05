@@ -4,9 +4,6 @@ from typing import List
 
 
 class Bus:
-    def __init__(self):
-        pass
-
     @staticmethod
     def group(parent: str, child: str, keys: List[tuple]) -> [str, None]:
         try:
